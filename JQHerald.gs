@@ -10,7 +10,7 @@ function start() {
   var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
   var EVENT_REQUEST_URL        = "https://api.guildwars2.com/v1/events.json?world_id=" + WORLD_ID;
-  var RELEVANT_EVENTS          = [
+  var relevantEvents           = [
     // Tequatl
     { "id":"568A30CF-8512-462F-9D67-647D69BEFAED", "name":"Defeat Tequatl the Sunless." },
     
@@ -60,6 +60,8 @@ function start() {
     { "id":"3ED4FEB4-A976-4597-94E8-8BFD9053522F", "name":"Disable the containers before they release their toxins." },
     { "id":"9AA133DC-F630-4A0E-BB5D-EE34A2B306C2", "name":"Defeat the Inquest's golem Mark II." },
   ];
+  Logger.log(relevantEvents);
+  
   
   // DO NOT CHANGE ANYTHING BELOW THIS LINE
   // Store variables
