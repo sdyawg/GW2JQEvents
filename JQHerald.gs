@@ -5,7 +5,7 @@
 /**     Live demo at http://twitter.com/DearAssistant    **/
 
 function start() {
-  var TWITTER_CONSUMER_KEY     = "p8kEVzxS61VpQHrUjVNrQ";
+  var TWITTER_CONSUMER_KEY     = "a4fznUjbmRogIa6ahSMLRQ";
   var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
   var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
@@ -107,9 +107,10 @@ function oAuth() {
 }
 
 function fetchEvents() {
+  Logger.log("fetchEvents()");
   oAuth();
   var twitter_handle = ScriptProperties.getProperty("TWITTER_HANDLE");
-  var eventRequestUrl = "https://api.guildwars2.com/v1/events.json?world_id=" + ScriptProperties.getProperty("WORLD_ID");
+  var eventRequestUrl = ScriptProperties.getProperty("EVENT_REQUEST_URL");
   var relevantEvents = ScriptProperties.getProperty("RELEVANT_EVENTS");
   var options = {
     "method": "get"
@@ -123,6 +124,7 @@ function fetchEvents() {
       var eventData = Utilities.jsonParse(eventResult.getContentText());
       var prevValue = ScriptProperty.getProperty(val.id);
       var currValue = eventData.events[0].state;
+      Logger.log("Got Previous Status %s, Current Status %s", prevValue, currValue);
       ScriptProperty.setProperty(val.id, currValue);
       if (prevValue === null) {
         return;
@@ -170,4 +172,9 @@ function encodeString (q) {
    str = str.replace(/\)/g,'%29');
    str = str.replace(/'/g,'%27');
    return str;
+}
+
+function testTweet() {
+  oAuth();
+  sendTweet("Testing 3.14159265258979323...");
 }
