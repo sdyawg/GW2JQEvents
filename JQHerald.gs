@@ -4,30 +4,12 @@
 /**     Tutorial link: http://www.labnol.org/?p=27902    **/
 /**     Live demo at http://twitter.com/DearAssistant    **/
 
-function serializeEvents(eventsArr) {
-  if (eventsArr.length < 2) return "";
-  var result = eventsArr[0].id + "|" + eventsArr[0].name;
-  for (var i = 1; i < eventsArr.length; ++i) {
-    result += "|" + eventsArr[i].id + "|" + eventsArr[i].name;
-  }
-  return result;
-}
-
-function deserializeEvents(eventsStr) {
-  var results = [];
-  var strings = eventsStr.split("|");
-  for (var i = 0; i < strings.length; i += 2) {
-    results.push({
-      "id": strings[i],
-      "name": strings[i + 1]
-    });
-  }
-  return results;
-}
-
+/** Main Function -- Run this function to start Twitter  **/
+/** Bot. You might not see tweets for up to 10 minutes   **/
+/** after you click Run.                                 **/
 function start() {
   var TWITTER_CONSUMER_KEY     = "a4fznUjbmRogIa6ahSMLRQ";
-  var TWITTER_CONSUMER_SECRET  = "4vgkch1ez2b3hWwMJFze66vqJD22XQleLhRpb5IfPw";
+  var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
   var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
   var EVENT_REQUEST_URL        = "https://api.guildwars2.com/v1/events.json?world_id=" + WORLD_ID;
@@ -104,6 +86,62 @@ function start() {
            .create();
 }
 
+/** Helper Functions -- Mainly for converting between    **/
+/** arrays of objects (what we get from requests) and    **/
+/** equivalent strings (what ScriptProperties            **/
+/** understands)                                         **/
+function serializeEvents(eventsArr) {
+  if (eventsArr.length < 2) return "";
+  var result = eventsArr[0].id + "|" + eventsArr[0].name;
+  for (var i = 1; i < eventsArr.length; ++i) {
+    result += "|" + eventsArr[i].id + "|" + eventsArr[i].name;
+  }
+  return result;
+}
+
+function deserializeEvents(eventsStr) {
+  var results = [];
+  var strings = eventsStr.split("|");
+  for (var i = 0; i < strings.length; i += 2) {
+    results.push({
+      "id": strings[i],
+      "name": strings[i + 1]
+    });
+  }
+  return results;
+}
+
+function serializeEventStates(eventStateArr) {
+  if (eventStatusArr.length < 2) return "";
+  var result = eventStatusArr[0].id + "|" + eventStatusArr[0].state;
+  for (var i = 1; i < eventStatusArr.length; ++i) {
+    result += "|" + eventStatusArr[i].id + "|" + eventStatusArr[i].state;
+  }
+  return result;
+}
+
+function deserializeEventStates(eventStateStr) {
+  if (eventStateStr === null) return [];
+  var results = [];
+  var strings = eventStatusStr.split("|");
+  for (var i = 0; i < strings.length; i += 2) {
+    results.push({
+      "id": strings[i],
+      "state": strings[i + 1]
+    });
+  }
+  return results;
+}
+
+function findEventIndex(eventStateArr, id) {
+  for (var i = 0; i < eventStateArr.length; ++i) {
+    if (eventStateArr[i].id === id) return i;
+  }
+  return -1;
+}
+
+/** This authorizes you to use the twitter API and tweet **/
+/** Must be called before you use the API!               **/
 function oAuth() {
   var oauthConfig = UrlFetchApp.addOAuthService("twitter");
   oauthConfig.setAccessTokenUrl("https://api.twitter.com/oauth/access_token");
@@ -113,26 +151,45 @@ function oAuth() {
   oauthConfig.setConsumerSecret(ScriptProperties.getProperty("TWITTER_CONSUMER_SECRET"));
 }
 
+/** Here's where the magic happens - this function is    **/
+/** called regularly (based on the trigger defined in    **/
+/** the start() function above.                          **/
 function fetchEvents() {
   try {
     oAuth();
     var eventRequestUrl = ScriptProperties.getProperty("EVENT_REQUEST_URL");
     var relevantEvents = deserializeEvents(ScriptProperties.getProperty("RELEVANT_EVENTS"));
+    var eventStates = deserializeEventStates(ScriptProperties.getProperty("EVENT_STATES"));
+    
     for (var i = 0; i < relevantEvents.length; ++i) {
       var eventObj = relevantEvents[i];
+      
       var request = eventRequestUrl + "&event_id=" + eventObj.id;
       var eventResult = UrlFetchApp.fetch(request);
       if (!(eventResult.getResponseCode() === 200)) return;
-      
       var eventData = Utilities.jsonParse(eventResult.getContentText());
-      var prevValue = ScriptProperties.getProperty(eventObj.id);
       var currValue = eventData.events[0].state;
-      Logger.log("For Event \"%s\" (id %s), got:\n\tPrevious Status %s\n\tCurrent Status %s", eventObj.name, eventObj.id, prevValue, currValue);
-      ScriptProperties.setProperty(eventObj.id, currValue);
+      
+      var index = findEventIndex(eventStates, eventObj.id);
+      var prevValue;
+      if (index === -1) {
+        prevValue = null;
+        eventStates.push({
+          "id": eventObj.id,
+          "state": currValue
+        });
+      } else {
+        prevValue = eventStates[index].state;
+        eventStates[index].state = currValue;
+      }
+      
       if (prevValue !== null && prevValue != currValue) {
         sendTweet("\"" + truncate(eventObj.name) + "\" changed status from " + prevValue + " to " + currValue);
       }
+      
+      Logger.log("For Event \"%s\" (id %s), got:\n\tPrevious Status %s\n\tCurrent Status %s", eventObj.name, eventObj.id, prevValue, currValue);
     }
+    ScriptProperties.setProperty("EVENT_STATES", serializeEventStates(eventStates));
   } catch (e) {
     Logger.log(e.toString());
   }
