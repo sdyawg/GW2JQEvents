@@ -77,11 +77,8 @@ function start() {
     ScriptApp.deleteTrigger(triggers[i]);
   }
   
-  var options = {
-    "method": "get"
-  };
   var requestUrl = "https://api.guildwars2.com/v1/event_names.json?lang=en-US";
-  var result = UrlFetchApp.fetch(requestUrl, options);    
+  var result = UrlFetchApp.fetch(requestUrl);    
 
   if (result.getResponseCode() === 200) {
     var event_names = Utilities.jsonParse(result.getContentText());
@@ -112,13 +109,10 @@ function fetchEvents() {
   var twitter_handle = ScriptProperties.getProperty("TWITTER_HANDLE");
   var eventRequestUrl = ScriptProperties.getProperty("EVENT_REQUEST_URL");
   var relevantEvents = ScriptProperties.getProperty("RELEVANT_EVENTS");
-  var options = {
-    "method": "get"
-  };
   relevantEvents.forEach(function (val, i, arr) {
     var request = eventRequestUrl + "&event_id=" + val.id;
     try {
-      var eventResult = UrlFetchApp.fetch(request, options);
+      var eventResult = UrlFetchApp.fetch(request);
       if (!(eventResult.getResponseCode() === 200)) return;
       
       var eventData = Utilities.jsonParse(eventResult.getContentText());
@@ -176,5 +170,5 @@ function encodeString (q) {
 
 function testTweet() {
   oAuth();
-  sendTweet("Testing 3.14159265258979323...");
+  sendTweet("TESTING, FO REALZ, PLZ BE ON JQHERALD");
 }
