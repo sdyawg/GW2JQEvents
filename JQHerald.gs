@@ -5,8 +5,7 @@
 /**     Live demo at http://twitter.com/DearAssistant    **/
 
 function start() {
-  // REPLACE THESE DUMMY VALUES
-  var TWITTER_CONSUMER_KEY     = "XXXX"; // No peeking!
+  var TWITTER_CONSUMER_KEY     = "p8kEVzxS61VpQHrUjVNrQ";
   var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
   var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
