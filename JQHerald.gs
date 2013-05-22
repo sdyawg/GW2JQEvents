@@ -5,18 +5,15 @@
 /**     Live demo at http://twitter.com/DearAssistant    **/
 
 function serializeEvents(eventsArr) {
-  Logger.log(eventsArr);
   if (eventsArr.length < 2) return "";
   var result = eventsArr[0].id + "|" + eventsArr[0].name;
   for (var i = 1; i < eventsArr.length; ++i) {
     result += "|" + eventsArr[i].id + "|" + eventsArr[i].name;
   }
-  Logger.log(result);
   return result;
 }
 
 function deserializeEvents(eventsStr) {
-  Logger.log(eventsStr);
   var results = [];
   var strings = eventsStr.split("|");
   for (var i = 0; i < strings.length; i += 2) {
@@ -25,13 +22,12 @@ function deserializeEvents(eventsStr) {
       "name": strings[i + 1]
     });
   }
-  Logger.log(results);
   return results;
 }
 
 function start() {
   var TWITTER_CONSUMER_KEY     = "a4fznUjbmRogIa6ahSMLRQ";
-  var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
+  var TWITTER_CONSUMER_SECRET  = "4vgkch1ez2b3hWwMJFze66vqJD22XQleLhRpb5IfPw";
   var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
   var EVENT_REQUEST_URL        = "https://api.guildwars2.com/v1/events.json?world_id=" + WORLD_ID;
@@ -68,7 +64,7 @@ function start() {
     { "id":"36330140-7A61-4708-99EB-010B10420E39", "name":"Drive back Underworld creatures by destroying portals in the swamp." },
     { "id":"31CEBA08-E44D-472F-81B0-7143D73797F5", "name":"Defeat the shadow behemoth." },
     
-    // "Fire Elemental" Meta Event and Pre-Events
+    // "Fire Elemental" Meta Event Chain
     { "id":"5E4E9CD9-DD7C-49DB-8392-C99E1EF4E7DF", "name":"Escort the C.L.E.A.N. 5000 golem while it absorbs clouds of chaos magic." },
     { "id":"2C833C11-5CD5-4D96-A4CE-A74C04C9A278", "name":"Defend the C.L.E.A.N. 5000 golem." },
     { "id":"33F76E9E-0BB6-46D0-A3A9-BE4CDFC4A3A4", "name":"Destroy the fire elemental created from chaotic energy fusing with the C.L.E.A.N. 5000's energy core." },
@@ -86,7 +82,6 @@ function start() {
     { "id":"9AA133DC-F630-4A0E-BB5D-EE34A2B306C2", "name":"Defeat the Inquest's golem Mark II." },
   ];
   
-  // DO NOT CHANGE ANYTHING BELOW THIS LINE
   // Store variables
   ScriptProperties.setProperty("TWITTER_CONSUMER_KEY",    TWITTER_CONSUMER_KEY);
   ScriptProperties.setProperty("TWITTER_CONSUMER_SECRET", TWITTER_CONSUMER_SECRET);
@@ -101,21 +96,11 @@ function start() {
   for(var i=0; i < triggers.length; i++) {
     ScriptApp.deleteTrigger(triggers[i]);
   }
-  
-  var requestUrl = "https://api.guildwars2.com/v1/event_names.json?lang=en-US";
-  var result = UrlFetchApp.fetch(requestUrl);    
-
-  if (result.getResponseCode() === 200) {
-    var event_names = Utilities.jsonParse(result.getContentText());
-    ScriptProperties.setProperty("EventNames", event_names);
-  }
-  
-  requestUrl = 
     
   // Setup trigger to read Tweets every five minutes
   ScriptApp.newTrigger("fetchEvents")
            .timeBased()
-           .everyMinutes(1)
+           .everyMinutes(5)
            .create();
 }
 
@@ -130,31 +115,22 @@ function oAuth() {
 
 function fetchEvents() {
   try {
-    Logger.log("fetchEvents()");
     oAuth();
     var eventRequestUrl = ScriptProperties.getProperty("EVENT_REQUEST_URL");
-    Logger.log(eventRequestUrl);
     var relevantEvents = deserializeEvents(ScriptProperties.getProperty("RELEVANT_EVENTS"));
-    Logger.log(relevantEvents);
-    for (eventObj in relevantEvents) {
-      Logger.log(eventObj);
+    for (var i = 0; i < relevantEvents.length; ++i) {
+      var eventObj = relevantEvents[i];
       var request = eventRequestUrl + "&event_id=" + eventObj.id;
-      Logger.log(request);
       var eventResult = UrlFetchApp.fetch(request);
-      Logger.log(eventResult);
       if (!(eventResult.getResponseCode() === 200)) return;
       
       var eventData = Utilities.jsonParse(eventResult.getContentText());
-      Logger.log(eventData);
-      var prevValue = ScriptProperty.getProperty(eventObj.id);
-      Logger.log(prevValue);
+      var prevValue = ScriptProperties.getProperty(eventObj.id);
       var currValue = eventData.events[0].state;
-      Logger.log("Got Previous Status %s, Current Status %s", prevValue, currValue);
-      ScriptProperty.setProperty(eventObj.id, currValue);
-      if (prevValue === null) {
-        return;
-      } else if (prevValue != currValue) {
-        sendTweet("\"" + truncate(val.name) + "\" changed status from " + prevValue + " to " + currValue);
+      Logger.log("For Event \"%s\" (id %s), got:\n\tPrevious Status %s\n\tCurrent Status %s", eventObj.name, eventObj.id, prevValue, currValue);
+      ScriptProperties.setProperty(eventObj.id, currValue);
+      if (prevValue !== null && prevValue != currValue) {
+        sendTweet("\"" + truncate(eventObj.name) + "\" changed status from " + prevValue + " to " + currValue);
       }
     }
   } catch (e) {
@@ -181,7 +157,7 @@ function sendTweet(tweet) {
   
   try {
     var result = UrlFetchApp.fetch(status, options);
-    Logger.log(result.getContentText());    
+    Logger.log(result.getContentText());
   } catch (e) {
     Logger.log(e.toString());
   }
