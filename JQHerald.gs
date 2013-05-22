@@ -4,13 +4,38 @@
 /**     Tutorial link: http://www.labnol.org/?p=27902    **/
 /**     Live demo at http://twitter.com/DearAssistant    **/
 
+function serializeEvents(eventsArr) {
+  Logger.log(eventsArr);
+  if (eventsArr.length < 2) return "";
+  var result = eventsArr[0].id + "|" + eventsArr[0].name;
+  for (var i = 1; i < eventsArr.length; ++i) {
+    result += "|" + eventsArr[i].id + "|" + eventsArr[i].name;
+  }
+  Logger.log(result);
+  return result;
+}
+
+function deserializeEvents(eventsStr) {
+  Logger.log(eventsStr);
+  var results = [];
+  var strings = eventsStr.split("|");
+  for (var i = 0; i < strings.length; i += 2) {
+    results.push({
+      "id": strings[i],
+      "name": strings[i + 1]
+    });
+  }
+  Logger.log(results);
+  return results;
+}
+
 function start() {
   var TWITTER_CONSUMER_KEY     = "a4fznUjbmRogIa6ahSMLRQ";
   var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
   var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
   var EVENT_REQUEST_URL        = "https://api.guildwars2.com/v1/events.json?world_id=" + WORLD_ID;
-  var relevantEvents           = [
+  var RELEVANT_EVENTS          = [
     // Tequatl
     { "id":"568A30CF-8512-462F-9D67-647D69BEFAED", "name":"Defeat Tequatl the Sunless." },
     
@@ -60,8 +85,6 @@ function start() {
     { "id":"3ED4FEB4-A976-4597-94E8-8BFD9053522F", "name":"Disable the containers before they release their toxins." },
     { "id":"9AA133DC-F630-4A0E-BB5D-EE34A2B306C2", "name":"Defeat the Inquest's golem Mark II." },
   ];
-  Logger.log(relevantEvents);
-  
   
   // DO NOT CHANGE ANYTHING BELOW THIS LINE
   // Store variables
@@ -70,7 +93,7 @@ function start() {
   ScriptProperties.setProperty("TWITTER_HANDLE",          TWITTER_HANDLE);
   ScriptProperties.setProperty("WORLD_ID",                WORLD_ID);
   ScriptProperties.setProperty("EVENT_REQUEST_URL",       EVENT_REQUEST_URL);
-  ScriptProperties.setProperty("RELEVANT_EVENTS",         RELEVANT_EVENTS);
+  ScriptProperties.setProperty("RELEVANT_EVENTS",         serializeEvents(RELEVANT_EVENTS));
     
   // Delete existing triggers, if any
   var triggers = ScriptApp.getScriptTriggers();
@@ -111,7 +134,7 @@ function fetchEvents() {
     oAuth();
     var eventRequestUrl = ScriptProperties.getProperty("EVENT_REQUEST_URL");
     Logger.log(eventRequestUrl);
-    var relevantEvents = ScriptProperties.getProperty("RELEVANT_EVENTS");
+    var relevantEvents = deserializeEvents(ScriptProperties.getProperty("RELEVANT_EVENTS"));
     Logger.log(relevantEvents);
     for (eventObj in relevantEvents) {
       Logger.log(eventObj);
