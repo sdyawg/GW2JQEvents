@@ -104,31 +104,37 @@ function oAuth() {
 }
 
 function fetchEvents() {
-  Logger.log("fetchEvents()");
-  oAuth();
-  var twitter_handle = ScriptProperties.getProperty("TWITTER_HANDLE");
-  var eventRequestUrl = ScriptProperties.getProperty("EVENT_REQUEST_URL");
-  var relevantEvents = ScriptProperties.getProperty("RELEVANT_EVENTS");
-  relevantEvents.forEach(function (val, i, arr) {
-    var request = eventRequestUrl + "&event_id=" + val.id;
-    try {
+  try {
+    Logger.log("fetchEvents()");
+    oAuth();
+    var eventRequestUrl = ScriptProperties.getProperty("EVENT_REQUEST_URL");
+    Logger.log(eventRequestUrl);
+    var relevantEvents = ScriptProperties.getProperty("RELEVANT_EVENTS");
+    Logger.log(relevantEvents);
+    for (eventObj in relevantEvents) {
+      Logger.log(eventObj);
+      var request = eventRequestUrl + "&event_id=" + eventObj.id;
+      Logger.log(request);
       var eventResult = UrlFetchApp.fetch(request);
+      Logger.log(eventResult);
       if (!(eventResult.getResponseCode() === 200)) return;
       
       var eventData = Utilities.jsonParse(eventResult.getContentText());
-      var prevValue = ScriptProperty.getProperty(val.id);
+      Logger.log(eventData);
+      var prevValue = ScriptProperty.getProperty(eventObj.id);
+      Logger.log(prevValue);
       var currValue = eventData.events[0].state;
       Logger.log("Got Previous Status %s, Current Status %s", prevValue, currValue);
-      ScriptProperty.setProperty(val.id, currValue);
+      ScriptProperty.setProperty(eventObj.id, currValue);
       if (prevValue === null) {
         return;
       } else if (prevValue != currValue) {
         sendTweet("\"" + truncate(val.name) + "\" changed status from " + prevValue + " to " + currValue);
       }
-    } catch (e) {
-      Logger.log(e.toString());
     }
-  });
+  } catch (e) {
+    Logger.log(e.toString());
+  }
 }
 
 function truncate(eventName) {
@@ -166,9 +172,4 @@ function encodeString (q) {
    str = str.replace(/\)/g,'%29');
    str = str.replace(/'/g,'%27');
    return str;
-}
-
-function testTweet() {
-  oAuth();
-  sendTweet("TESTING, FO REALZ, PLZ BE ON JQHERALD");
 }
