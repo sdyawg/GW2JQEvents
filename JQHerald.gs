@@ -9,7 +9,7 @@
 /** after you click Run.                                 **/
 function start() {
   var TWITTER_CONSUMER_KEY     = "a4fznUjbmRogIa6ahSMLRQ";
-  var TWITTER_CONSUMER_SECRET  = "YYYY";
+  var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
   var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
   var EVENT_REQUEST_URL        = "https://api.guildwars2.com/v1/events.json?world_id=" + WORLD_ID;
