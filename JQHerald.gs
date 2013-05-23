@@ -5,7 +5,7 @@
 /**     Live demo at http://twitter.com/DearAssistant    **/
 
 function set_constants() {
-  var TWITTER_CONSUMER_KEY     = "fEMee7Q05WNvwbPNl0VuA";
+  var TWITTER_CONSUMER_KEY     = "7QhPFzt1ioanF3z53tRtA";
   var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
   var EVENT_REQUEST_URL        = "https://api.guildwars2.com/v1/events.json?world_id=" + WORLD_ID;
@@ -232,4 +232,11 @@ function encodeString (q) {
    str = str.replace(/\)/g,'%29');
    str = str.replace(/'/g,'%27');
    return str;
+}
+
+function testTweet() {
+  set_constants();
+  oAuth();
+  var now = new Date();
+  sendTweet("Testing 1, 2, 3. The time is now " + now.toUTCString());
 }
