@@ -33,7 +33,7 @@ function set_constants() {
     { "id":"90B241F5-9E59-46E8-B608-2507F8810E00", "name":"Defeat the shaman's elite guard." },
     { "id":"DB83ABB7-E5FE-4ACB-8916-9876B87D300D", "name":"Defeat the Svanir shamans spreading the dragon's corruption." },
     { "id":"374FC8CB-7AB7-4381-AC71-14BFB30D3019", "name":"Destroy the corrupted portals summoning creatures from the mists." },
-    { "id":"34536391-444F-484A-96E1-E8CB240AEAAC", "name":"Kill the Svanir shaman before he completes the Dragon totem." },
+    { "id":"F7D9D427-5E54-4F12-977A-9809B23FBA99", "name":"Kill the Svanir shaman chief to break his control over the ice elemental." },
     
     // "Shadow Behemoth" Meta Event Chain
     { "id":"AFCF031A-F71D-4CEA-85E1-957179414B25", "name":"Drive back Underworld creatures by destroying portals in Taminn Foothills." },
