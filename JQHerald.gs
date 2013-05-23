@@ -9,7 +9,7 @@
 /** after you click Run.                                 **/
 function start() {
   var TWITTER_CONSUMER_KEY     = "a4fznUjbmRogIa6ahSMLRQ";
-  var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
+  var TWITTER_CONSUMER_SECRET  = "YYYY";
   var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
   var EVENT_REQUEST_URL        = "https://api.guildwars2.com/v1/events.json?world_id=" + WORLD_ID;
@@ -112,10 +112,10 @@ function deserializeEvents(eventsStr) {
 }
 
 function serializeEventStates(eventStateArr) {
-  if (eventStatusArr.length < 2) return "";
-  var result = eventStatusArr[0].id + "|" + eventStatusArr[0].state;
-  for (var i = 1; i < eventStatusArr.length; ++i) {
-    result += "|" + eventStatusArr[i].id + "|" + eventStatusArr[i].state;
+  if (eventStateArr.length < 2) return "";
+  var result = eventStateArr[0].id + "|" + eventStateArr[0].state;
+  for (var i = 1; i < eventStateArr.length; ++i) {
+    result += "|" + eventStateArr[i].id + "|" + eventStateArr[i].state;
   }
   return result;
 }
@@ -123,7 +123,7 @@ function serializeEventStates(eventStateArr) {
 function deserializeEventStates(eventStateStr) {
   if (eventStateStr === null) return [];
   var results = [];
-  var strings = eventStatusStr.split("|");
+  var strings = eventStateStr.split("|");
   for (var i = 0; i < strings.length; i += 2) {
     results.push({
       "id": strings[i],
