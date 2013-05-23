@@ -1,0 +1,31 @@
+How to convert GW2JQEvents to your world!
+
+1. Set up a Twitter Account that will be your Bot account. Some people have been following the
+   pattern of <Server Abbreviation>Herald for the name (e.g. JQHerald, DEHerald)
+2. Go to https://dev.twitter.com/ and sign in with this newly created account.
+  a. Give your app a name, a description, and URL (for example, your github repo or my twitter)
+  b. Set the Callback URL to https://spreadsheets.google.com/macros/
+  c. Save these settings, then click on the "Settings" tab
+  d. Select "Read and Write" under Application Type (you will be writing tweets!).
+  e. Scroll down and click Update, then click on the "OAuth" tab
+  f. Write down your Consumer Key (can be safely shared) and your Consumer Secret (keep this
+     secret!)
+3. Go to http://www.google.com/script/start/ and click "Start Scripting". On the next screen,
+   choose Blank Project.
+  a. Copy the code into the editor window, replacing the empty myFunction() provided for you.
+  b. Replace the TWITTER_CONSUMER_KEY string with your Consumer Key
+  c. Replace the TWITTER_CONSUMER_SECRET string with your Consumer Secret (REMEMBER TO KEEP THIS
+     SECRET! Try to keep this off of any github repo you use!)
+  d. Replace the WORLD_ID integer with your world's ID (see
+     https://api.guildwars2.com/v1/world_names.json for a full map of world names to IDs)
+  e. Optional: add or remove events from the RELEVANT_EVENTS array (see
+     https://api.guildwars2.com/v1/event_names.json for a full list of event names and IDs)
+  f. Save your script! Rename it as you like (mine is JQHerald.gs)
+4. Click the "Run" menu, and select "start"
+5. You're done!
+
+You probably won't see tweets immediately. The start() function adds a trigger which will activate
+every 5 minutes and call the fetchEvents() function. The first time fetchEvents is ever called, it
+will simply grab the current event states. On subsequent runs, it will grab current event states,
+compare it to the previous state for each event, and tweet if and only if an event's state has
+changed!
