@@ -22,6 +22,8 @@ How to convert GW2JQEvents to your world!
      https://api.guildwars2.com/v1/event_names.json for a full list of event names and IDs)
   f. Save your script! Rename it as you like (mine is JQHerald.gs)
 4. Click the "Run" menu, and select "start"
+  a. You may have to click "Authorize" for Google Scripts
+  b. You may have to click "Authorize" for Twitter
 5. You're done!
 
 You probably won't see tweets immediately. The start() function adds a trigger which will activate
@@ -29,3 +31,11 @@ every 5 minutes and call the fetchEvents() function. The first time fetchEvents 
 will simply grab the current event states. On subsequent runs, it will grab current event states,
 compare it to the previous state for each event, and tweet if and only if an event's state has
 changed!
+
+===================================================================================================
+
+These instructions mostly copied from Amit Agarwal (@labnol)
+at http://www.labnol.org/internet/write-twitter-bot/27902/
+
+Changes were made to the script and instructions due to the differing nature of these bots (Amit's
+is a Wolfram-Alpha powered Q&A bot, while ours is a GW2 event bot).
