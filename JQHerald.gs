@@ -4,13 +4,9 @@
 /**     Tutorial link: http://www.labnol.org/?p=27902    **/
 /**     Live demo at http://twitter.com/DearAssistant    **/
 
-/** Main Function -- Run this function to start Twitter  **/
-/** Bot. You might not see tweets for up to 10 minutes   **/
-/** after you click Run.                                 **/
-function start() {
-  var TWITTER_CONSUMER_KEY     = "a4fznUjbmRogIa6ahSMLRQ";
+function set_constants() {
+  var TWITTER_CONSUMER_KEY     = "fEMee7Q05WNvwbPNl0VuA";
   var TWITTER_CONSUMER_SECRET  = "YYYY"; // No peeking!
-  var TWITTER_HANDLE           = "JQHerald";
   var WORLD_ID                 = 1008; // Jade Quarry - see https://api.guildwars2.com/v1/world_names.json
   var EVENT_REQUEST_URL        = "https://api.guildwars2.com/v1/events.json?world_id=" + WORLD_ID;
   var RELEVANT_EVENTS          = [
@@ -67,10 +63,16 @@ function start() {
   // Store variables
   ScriptProperties.setProperty("TWITTER_CONSUMER_KEY",    TWITTER_CONSUMER_KEY);
   ScriptProperties.setProperty("TWITTER_CONSUMER_SECRET", TWITTER_CONSUMER_SECRET);
-  ScriptProperties.setProperty("TWITTER_HANDLE",          TWITTER_HANDLE);
   ScriptProperties.setProperty("WORLD_ID",                WORLD_ID);
   ScriptProperties.setProperty("EVENT_REQUEST_URL",       EVENT_REQUEST_URL);
   ScriptProperties.setProperty("RELEVANT_EVENTS",         serializeEvents(RELEVANT_EVENTS));
+}
+
+/** Main Function -- Run this function to start Twitter  **/
+/** Bot. You might not see tweets for up to 10 minutes   **/
+/** after you click Run.                                 **/
+function start() {
+  set_constants();
     
   // Delete existing triggers, if any
   var triggers = ScriptApp.getScriptTriggers();
