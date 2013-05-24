@@ -66,6 +66,7 @@ function setConstants() {
   ScriptProperties.setProperty("WORLD_ID",                WORLD_ID);
   ScriptProperties.setProperty("EVENT_REQUEST_URL",       EVENT_REQUEST_URL);
   ScriptProperties.setProperty("RELEVANT_EVENTS",         Utilities.jsonStringify(RELEVANT_EVENTS));
+  ScriptProperties.setProperty("EVENT_STATES",            "{}");
 }
 
 /** Main Function -- Run this function to start Twitter  **/
