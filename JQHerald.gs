@@ -147,7 +147,7 @@ function fetchEvents() {
     Logger.log(e.toString());
   }
   var ms = new Date().getTime() - start.getTime();
-  Logger.log("fetchEvents: started %s, took %s seconds", start.toUTCString(), ms);
+  Logger.log("fetchEvents: started %s, took %s ms", start.toUTCString(), ms);
 }
 
 function truncate(eventName) {
