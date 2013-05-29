@@ -114,7 +114,6 @@ function oAuth() {
 /** called regularly (based on the trigger defined in    **/
 /** the start() function above.                          **/
 function fetchEvents() {
-  var start = new Date();
   try {
     oAuth();
     var relevantEvents = Utilities.jsonParse(ScriptProperties.getProperty("RELEVANT_EVENTS"));
@@ -146,8 +145,6 @@ function fetchEvents() {
   } catch (e) {
     Logger.log(e.toString());
   }
-  var ms = new Date().getTime() - start.getTime();
-  Logger.log("fetchEvents: started %s, took %s ms", start.toUTCString(), ms);
 }
 
 function truncate(eventName) {
