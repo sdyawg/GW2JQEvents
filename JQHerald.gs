@@ -136,7 +136,7 @@ function fetchEvents() {
       }
       
       if (prevValue !== null && prevValue != curValue) {
-        sendTweet("\"" + truncate(relevantEvents[id].name) + "\" (" + relevantEvents[id].metaname + ") is now \"" + curValue + "\" #GW2 #JadeQuarry");
+        sendTweet("\"" + truncate(relevantEvents[id].name) + "\" (" + relevantEvents[id].metaname + ") is now \"" + curValue + "\" #JadeQuarry");
       }
       
       Logger.log("For Event \"%s\" (id %s, meta %s), got:\n\tPrevious Status %s\n\tCurrent Status %s", relevantEvents[id].name, id, relevantEvents[id].metaname, prevValue, curValue);
@@ -148,8 +148,8 @@ function fetchEvents() {
 }
 
 function truncate(eventName) {
-  if (eventName.length < 80) return eventName;
-  return eventName.substring(0, 77) + "...";
+  if (eventName.length < 84) return eventName;
+  return eventName.substring(0, 81) + "...";
 }
 
 function sendTweet(tweet) {
